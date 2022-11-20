@@ -40,19 +40,6 @@ fs.createReadStream("./IP2LOCATION-LITE-DB5.IPV6.CSV")
     }
   })
   .on("end", () => {
-    for (let countryName in data) {
-      for (let region in data[countryName].regions) {
-        // check if region and city is the same
-        if (data[countryName].regions[region][region]) {
-          cntCoord =
-            cntCoord -
-            Object.keys(data[countryName].regions[region]).length +
-            1;
-          data[countryName].regions[region] =
-            data[countryName].regions[region][region]; // shortcut
-        }
-      }
-    }
     console.log("coordinate count: ", cntCoord);
     fs.writeFile("countryData.json", JSON.stringify(data), function (err) {
       if (err) console.log(err);
