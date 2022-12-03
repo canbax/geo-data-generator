@@ -1,21 +1,20 @@
-// import { Coordinates, CalculationMethod, PrayerTimes, Madhab } from "adhan";
-// const coordinates = new Coordinates(40.0082868, 32.8422953);
-// const params = CalculationMethod.Turkey();
-// const date = new Date();
-// const prayerTimes = new PrayerTimes(coordinates, date, params);
-
-// console.log(prayerTimes);
 const fs = require("fs");
 const csv = require("fast-csv");
+const cliProgress = require("cli-progress");
 
 const data = {};
 let cntCoord = 0;
 const t1 = new Date().getTime();
 
+const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
+bar1.start(4969097, 0);
+
 fs.createReadStream("./IP2LOCATION-LITE-DB5.IPV6.CSV")
   .pipe(csv.parse({ headers: false }))
   .on("error", (error) => console.error(error))
   .on("data", (row) => {
+    bar1.increment(1);
     const countryCode = row[2];
     const countryName = row[3];
     const regionName = row[4];
@@ -40,6 +39,7 @@ fs.createReadStream("./IP2LOCATION-LITE-DB5.IPV6.CSV")
     }
   })
   .on("end", () => {
+    bar1.stop();
     console.log("coordinate count: ", cntCoord);
     fs.writeFile("countryData.json", JSON.stringify(data), function (err) {
       if (err) console.log(err);
